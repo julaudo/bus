@@ -1,0 +1,65 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Bus
+{
+    public partial class PeriodSelector : UserControl
+    {
+        public TimeSpan Begin { get; set; }
+        public TimeSpan End { get; set; }
+
+        public int MinutesCount
+        {
+            get
+            {
+                return (int)End.Subtract(Begin).TotalMinutes;
+            }
+        }
+
+        public PeriodSelector()
+        {
+            InitializeComponent();
+            Begin = new TimeSpan(8, 0, 0);
+            End = new TimeSpan(20, 0, 0);
+        }
+
+        int Ceiling(int x, int y)
+        {
+            if(x % y != 0)
+            {
+                return x / y + 1;
+            }
+            else
+            {
+                return x / y;
+            }
+        }
+
+        private void PeriodSelector_Paint(object sender, PaintEventArgs e)
+        {
+            int minutes5 = Ceiling(MinutesCount, 5);
+            int minutes15 = Ceiling(MinutesCount, 15);
+            int minutes30 = Ceiling(MinutesCount, 30);
+
+
+            int sizeMinutes5 = Ceiling(Width, minutes5);
+            int sizeMinutes15 = Ceiling(Width, minutes15);
+            int sizeMinutes30 = Ceiling(Width, minutes30);
+
+            int x = 0;
+            for (int i = 0; i < minutes30; i++)
+            {
+                e.Graphics.FillRectangle(Brushes.White, e.ClipRectangle);
+                e.Graphics.DrawRectangle(Pens.Black, x, 0, 1, Height);
+                x += sizeMinutes30;
+            }
+        }
+    }
+}
